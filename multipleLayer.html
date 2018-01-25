@@ -82,6 +82,11 @@ mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1Mr
 			//change the map zoom so that all the data is shown
 			mymap.fitBounds(earthquakelayer.getBounds());
 		}
+		
+		function removeEarthquakeData(){
+			alert("removing the earthquake data here");
+			mymap.removeLayer(earthquakelayer);
+		}
 	</script>
 	
 	
@@ -106,6 +111,7 @@ mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1Mr
 	</script>
 		
 	<button id ="loadData" name="loadData" onclick = "loadEarthquakeData()">Click here to load the data</button>
+	<button id ="removeEarthquakeData" name="removeEarthquakeData" onclick="removeEarthquakeData()">Click here to remove the Earth quake data"</button>
 	
 	
 </br>This is web map with Leaflet
