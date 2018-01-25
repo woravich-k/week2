@@ -38,32 +38,55 @@ mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1Mr
 		
 		//and a variable that will hold the layer itself - we need to do this outside the function so that we can use it to remove the layer later on
 		var earthquakelayer;
+		var busstoplayer;
 		
 		//create the code to get the Earthquakes data using an XMLHttpRequest
-		function getEarthquakes(){
+		function getData(layername){
 			client = new XMLHttpRequest();
-			client.open('GET','https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson');
-			client.onreadystatechange = earthquakeResponse; //note don't use earthquakeResponse() with brackets as that doesn't work
+			if (layername == "earthquakes"){
+				url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson'
+			}
+			if (layername == "busstops"){
+				url = 'http://woravich-k/week2/busstops.geojson'
+			}
+			client.open('GET', url);
+			client.onreadystatechange = dataResponse; //note don't use earthquakeResponse() with brackets as that doesn't work
 			client.send();
 		}
 		
 		//create the code to wait for the response from the data server, and process the response once it is received
-		function earthquakeResponse(){
+		function dataResponse(){
 		//this function listens out for the server to say that the data is ready - i.e. has state 4
 			if (client.readyState == 4){
 			//once the data is ready, process the data
-			var earthquakedata = client.responseText;
-			loadEarthquakelayer(earthquakedata);
+			var geoJSONData = client.responseText;
+			loadLayer(geoJSONData);
 			}
 		}
 		
 		//convert the received data - which is text - to JSON format and add it to the map
-		function loadEarthquakelayer(earthquakedata){
+		function loadLayer(geoJSONData){
+			//decide which layer do we load?
+			if (geoJSONData.indexOf("earthquake")>0){
+				var loadingEarthquakes = true;
+			}
+			if (geoJSONData.indexOf("IIT_METHOD")>0){
+				var loadingBusstops = true;
+			}
 			//convert the text to JSON
-			var earthquakejson = JSON.parse(earthquakedata);
+			var json = JSON.parse(geoJSONData);
 			
-			//add the JSON layer onto the map it will appear using the default icons
-			earthquakelayer = L.geoJson(earthquakejson).addTo(mymap);
+			//add the JSON layer onto the map - it will appear using the default icons
+			if (loadingEarthquakes == true){
+				earthquakelayer = L.geoJson(json).addTo(mymap);
+				//change the map zoom so that all the data is shown
+				mymap.fitBounds(earthquakelayer.getBounds());
+			}
+			if (loadingBusstops == true) {
+				busstoplayer = L.geoJson(json).addTo(mymap)
+				// zoom to bus stops
+				mymap.fitBounds(busstoplayer.getBounds());
+			}
 			
 			/*,{
 				//use point to layer to create the points
@@ -79,13 +102,19 @@ mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1Mr
 				}
 			}).addTo(mymap);
 			*/
-			//change the map zoom so that all the data is shown
-			mymap.fitBounds(earthquakelayer.getBounds());
+			
 		}
 		
-		function removeEarthquakeData(){
-			alert("removing the earthquake data here");
-			mymap.removeLayer(earthquakelayer);
+		function removeData(layername){
+			if (layername == "earthquakes") {
+				alert("removing the earthquake data here");
+				mymap.removeLayer(earthquakelayer);
+			}
+			if (layername == "busstops") {
+				alert("removing the busstops data here");
+				mymap.removeLayer(busstoplayer);
+			}
+			
 		}
 	</script>
 	
@@ -110,9 +139,11 @@ mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1Mr
 		
 	</script>
 		
-	<button id ="loadData" name="loadData" onclick = "loadEarthquakeData()">Click here to load the data</button>
-	<button id ="removeEarthquakeData" name="removeEarthquakeData" onclick="removeEarthquakeData()">Click here to remove the Earth quake data"</button>
-	
+	<button id ="loadEarthquake" name="loadEarthquake" onclick = "getData('earthquakes')">Click here to load earthquakes</button>
+	<button id ="removeEarthquakeData" name="removeEarthquakeData" onclick="removeData('earthquakes')">Click here to remove the Earthquake data</button>
+	</br>
+	<button id ="loadBusStops" name="loadBusStops" onclick = "getData('busstops')">Click here to load bus stops</button>
+	<button id ="removeBusStops" name="removeBusStops" onclick="removeData('busstops')">Click here to remove the bus stops</button>
 	
 </br>This is web map with Leaflet
 </body>
