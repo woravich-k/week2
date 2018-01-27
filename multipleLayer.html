@@ -26,13 +26,15 @@ mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1Mr
 	<link rel="stylesheet" href = "leaflet.awesome-markers.css"/>
 	<script src ="leaflet.awesome-markers.js"></script>
 	<script>
-		function loadEarthquakeData(){
+		
+		//not use, since it's integrated with getData
+		/*function loadEarthquakeData(){
 			//call the getEarthquakes code
 			//keep the alert message so that we know something is happening
 			alert("Loading Earthquakes");
 			getEarthquakes();
 		}
-		
+		*/
 		//create a variable that will hold the XMLHttpRequest() - this must be done outside a function so that all the functions  can use the sam variable
 		var client;
 		
@@ -43,6 +45,7 @@ mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1Mr
 		//create the code to get the Earthquakes data using an XMLHttpRequest
 		function getData(layername){
 			client = new XMLHttpRequest();
+			alert("loading");
 			if (layername == "earthquakes"){
 				url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson'
 			}
